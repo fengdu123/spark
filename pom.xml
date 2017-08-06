@@ -10,41 +10,40 @@
         <module>hadoop</module>
         <module>spark</module>
         <module>rpc</module>
-        <!--<module>elastic_job</module>-->
     </modules>
 
-    <parent>
-        <groupId>org.apache</groupId>
-        <artifactId>apache</artifactId>
-        <version>14</version>
-    </parent>
+    <!--<parent>-->
+        <!--<groupId>org.apache</groupId>-->
+        <!--<artifactId>apache</artifactId>-->
+        <!--<version>14</version>-->
+    <!--</parent>-->
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>cloudera.repos</id>-->
-            <!--<url>https://repository.cloudera.com/content/groups/cdh-releases-rcs</url>-->
-            <!--<name>Cloudera Public Repositories</name>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>cloudera.snapshots.repo</id>-->
-            <!--<url>https://repository.cloudera.com/content/repositories/snapshots</url>-->
-            <!--<name>Cloudera Snapshots Repository</name>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>cloudera</id>-->
-            <!--<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>cloudera.public.repo</id>-->
-            <!--<url>https://repository.cloudera.com/artifactory/public</url>-->
-        <!--</repository>-->
-    <!--</repositories>-->
+    <repositories>
+        <repository>
+            <id>cloudera.repos</id>
+            <url>https://repository.cloudera.com/content/groups/cdh-releases-rcs</url>
+            <name>Cloudera Public Repositories</name>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>cloudera.snapshots.repo</id>
+            <url>https://repository.cloudera.com/content/repositories/snapshots</url>
+            <name>Cloudera Snapshots Repository</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+        <repository>
+            <id>cloudera.public.repo</id>
+            <url>https://repository.cloudera.com/artifactory/public</url>
+        </repository>
+    </repositories>
 
     <groupId>com.shadow</groupId>
     <artifactId>20170526</artifactId>
@@ -62,21 +61,19 @@
         <kafka.version>0.10.2.1</kafka.version>
         <CodeCacheSize>512m</CodeCacheSize>
         <java.version>1.8</java.version>
-        <hbase.version>0.98.9-hadoop2</hbase.version>
-        <!--<jmh.version>1.19</jmh.version>-->
-        <!--<junit.version>4.12</junit.version>-->
-        <!--<scala.binary.version>2.11</scala.binary.version>-->
-        <!--<scala.version>2.11.8</scala.version>-->
-        <!--<spark.version>2.1.0.cloudera1</spark.version>-->
-        <!--<hadoop.version>2.6.0-cdh5.12.0</hadoop.version>-->
-        <!--<scala.lang.version>2.11.8</scala.lang.version>-->
-        <!--<kafka.version>0.10.2.1</kafka.version>-->
-        <!--<CodeCacheSize>512m</CodeCacheSize>-->
-        <!--<java.version>1.8</java.version>-->
-        <!--<hbase.version>0.98.9-hadoop2</hbase.version>-->
-        <!--<zk.version>3.4.5-cdh5.12.0</zk.version>-->
+        <hbase.version>1.2.0-cdh5.12.0</hbase.version>
+        <jmh.version>1.19</jmh.version>
+        <junit.version>4.12</junit.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.8</scala.version>
+        <spark.version>2.2.0.cloudera1</spark.version>
+        <hadoop.version>2.6.0-cdh5.12.0</hadoop.version>
+        <scala.lang.version>2.11.8</scala.lang.version>
+        <kafka.version>0.10.2.1</kafka.version>
+        <CodeCacheSize>512m</CodeCacheSize>
+        <java.version>1.8</java.version>
+        <zk.version>3.4.5-cdh5.12.0</zk.version>
         <fasterxml.jackson.version>2.6.5</fasterxml.jackson.version>
-        <jetty.version>9.3.20.v20170531</jetty.version>
     </properties>
     <dependencyManagement>
 
@@ -300,12 +297,6 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jetty</artifactId>
-                    <groupId>org.mortbay.jetty</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -469,11 +460,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.32</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -498,6 +484,29 @@
                 </configuration>
             </plugin>
 
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+                <!--<version>2.10.4</version>-->
+                <!--<configuration>-->
+                    <!--<encoding>UTF8</encoding>-->
+                    <!--<aggregate>true</aggregate>-->
+                    <!--<charset>UTF8</charset>-->
+                    <!--<docencoding>UTF8</docencoding>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>attach-javadocs</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>jar</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<additionalparam>-Xdoclint:none</additionalparam>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -523,13 +532,13 @@
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>attach-scaladocs</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>doc-jar</goal>
-                        </goals>
-                    </execution>
+                    <!--<execution>-->
+                        <!--<id>attach-scaladocs</id>-->
+                        <!--<phase>verify</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>doc-jar</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>

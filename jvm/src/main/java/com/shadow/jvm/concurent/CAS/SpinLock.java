@@ -21,7 +21,7 @@ import static java.util.Optional.*;
  * Date: 2017/6/23 0023  10:21
  * Descrption:  线程只有在unlocked之后，下一个线程才能execute ，之前的线程都属于locked 自旋状态
  * **乐观锁其实就是不加锁，用CAS + 循环重试，实现多个线程/多个客户端，并发修改数据的问题。**
- * @See： https://coderbee.net/index.php/concurrent/20131115/577
+ * See https://coderbee.net/index.php/concurrent/20131115/577
  */
 public class SpinLock {
 

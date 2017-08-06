@@ -19,15 +19,16 @@
 package com.shadow.spark
 
 import scala.math.random
-
 import org.apache.spark.sql.SparkSession
+import org.shadow.core.Logging
 
 /** Computes an approximation to pi */
-object SparkPi {
+object SparkPi extends Logging{
   def main(args: Array[String]) {
     val spark = SparkSession
       .builder
       .appName("Spark Pi")
+        .master("local[*]")
       .getOrCreate()
     val slices = if (args.length > 0) args(0).toInt else 2
     val n = math.min(100000L * slices, Int.MaxValue).toInt // avoid overflow
@@ -36,7 +37,7 @@ object SparkPi {
       val y = random * 2 - 1
       if (x*x + y*y <= 1) 1 else 0
     }.reduce(_ + _)
-    println("Pi is roughly " + 4.0 * count / (n - 1))
+    logInfo("Pi is roughly " + 4.0 * count / (n - 1))
     spark.stop()
   }
 }

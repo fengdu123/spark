@@ -4,7 +4,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 
 /**
- *@See  http://zhanjindong.com/2015/03/15/java-concurrent-package-aqs-AbstractQueuedSynchronizer
+ *see  http://zhanjindong.com/2015/03/15/java-concurrent-package-aqs-AbstractQueuedSynchronizer
  * jucp 线程阻塞队列的维护 线程阻塞和唤醒
  */
 class SimpleLock extends AbstractQueuedSynchronizer {
