@@ -1,9 +1,5 @@
 package com.shadow.hadoop.sort;
 
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;

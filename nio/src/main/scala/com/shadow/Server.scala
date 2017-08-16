@@ -4,10 +4,6 @@ import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.{SelectionKey, Selector, ServerSocketChannel, SocketChannel}
 import java.util
-import java.util.Set
-
-import scala.util.control.Breaks
-
 
 /**
  * Class:

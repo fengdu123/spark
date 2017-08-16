@@ -10,7 +10,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.io.IOUtils;
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -76,7 +76,7 @@ public class HdfsClient {
         client.listAllFile(pathuri, true);
 
         System.out.println(splitStr);
-        client.putFileToHDFS("readme.MD", "hdfs://master:9000/"+new LocalDate().toString("yyyyMMdd"));
+        client.putFileToHDFS("readme.MD", "hdfs://master:9000/"+new DateTime().toString("yyyyMMdd"));
 
         fs.close();
 

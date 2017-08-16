@@ -155,4 +155,4 @@ $SPARK_HOME=/opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/l
 vi $SPARK_HOME/conf/spark-env.sh => /etc/spark2/conf/spark-env.sh
 export YARN_CONF_DIR=/etc/hadoop/conf.cloudera.yarn
 
-sudo -u hdfs spark2-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster pt/cloudera/parcels/CDH/jars/spark-examples-1.6.0-cdh5.8.4-hadoop2.6.0-cdh5.8.4.jar /10
+sudo -u hdfs spark2-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster /opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/lib/spark2/examples/jars /10

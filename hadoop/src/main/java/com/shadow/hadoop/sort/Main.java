@@ -1,7 +1,6 @@
 package com.shadow.hadoop.sort;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -23,7 +22,6 @@ import java.io.IOException;
  * Date: 2017/7/11 0011  22:07
  * Descrption:  driver 驱动程序
  */
-@Slf4j
 public class Main  extends Configured implements Tool {
 
 
@@ -97,7 +95,7 @@ public class Main  extends Configured implements Tool {
         job.setGroupingComparatorClass(DateTempGroupingCompartor.class);
 
         boolean status = job.waitForCompletion(true);
-        log.info("run(): status="+status);
+//        log.info("run(): status="+status);
         return status ? 0 : 1;
     }
 
@@ -106,14 +104,14 @@ public class Main  extends Configured implements Tool {
 
         // Make sure there are exactly 2 parameters
         if (args.length != 2) {
-          log.warn("SecondarySortDriver <input-dir> <output-dir>");
+//          log.warn("SecondarySortDriver <input-dir> <output-dir>");
             throw new IllegalArgumentException("SecondarySortDriver <input-dir> <output-dir>");
         }
 
         //String inputDir = args[0];
         //String outputDir = args[1];
         int returnStatus = submitJob(args);
-        log.info("returnStatus="+returnStatus);
+//        log.info("returnStatus="+returnStatus);
 
         System.exit(returnStatus);
 
