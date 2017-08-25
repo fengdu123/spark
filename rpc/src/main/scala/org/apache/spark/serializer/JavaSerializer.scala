@@ -88,6 +88,13 @@ private object JavaDeserializationStream {
   )
 }
 
+
+/**
+  * 序列化类 一个实例在同一时刻只能由一个线程访问
+  * @param counterReset
+  * @param extraDebugInfo
+  * @param defaultClassLoader
+  */
 private[spark] class JavaSerializerInstance(
                                              counterReset: Int, extraDebugInfo: Boolean, defaultClassLoader: ClassLoader)
   extends SerializerInstance {

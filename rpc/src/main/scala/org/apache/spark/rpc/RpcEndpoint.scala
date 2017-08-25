@@ -7,7 +7,7 @@ import org.apache.spark.RpcException
   * A factory class to create the [[RpcEnv]]. It must have an empty constructor so that it can be
   * created using Reflection.
   */
-trait RpcEnvFactory {
+trait  RpcEnvFactory {
 
   def create(config: RpcEnvConfig): RpcEnv
 }

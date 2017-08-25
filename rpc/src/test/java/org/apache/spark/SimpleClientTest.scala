@@ -7,9 +7,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-/**
-  * Created by xu.zhang on 7/23/17.
-  */
 object SimpleClientTest {
 
   def main(args: Array[String]): Unit = {

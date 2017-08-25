@@ -111,6 +111,7 @@ chown cloudera-scm:cloudera-scm /opt/cm-5.8.4/run/cloudera-scm-agent
 # 启动
 [server]
 /opt/cm-5.8.4/etc/init.d/cloudera-scm-server start
+tail -f /opt/cm-5.8.4/log/cloudera-scm-server/cloudera-scm-server.log
 [agent]
 /opt/cm-5.8.4/etc/init.d/cloudera-scm-agent start
 
@@ -131,7 +132,7 @@ echo "Hello world Bye world" > file0
 echo "Hello hadoop Goodbye hadoop" > file1
 hdfs dfs -mkdir -p /user/spafka/wordcount/input
 hdfs dfs -put file* /user/spafka/wordcount/input
-hadoop jar /opt/cloudera/parcels/CDH/jars/hadoop-examples.jar wordcount wordcount/input wordcount/output
+sudo -u hadoop jar /opt/cloudera/parcels/CDH/jars/hadoop-examples.jar wordcount wordcount/input wordcount/output
 hdfs dfs -getmerge wordcount/output output.txt
 cat output.txt
 sudo -u hdfs spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster SPARK_HOME/examples/lib/spark-examples.jar 10
@@ -140,8 +141,6 @@ sudo -u hdfs spark-submit --class org.apache.spark.examples.SparkPi --master yar
 
 sudo -u hdfs spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster /tmp/spark-1.0-SNAPSHOT.jar 10
 
-
-
 #安装spark2 @see http://blog.csdn.net/u010936936/article/details/73650417
 
 #升级spark2
@@ -149,10 +148,25 @@ sudo -u hdfs spark-submit --class org.apache.spark.examples.SparkPi --master yar
 
 #拷贝spark2官方的jar(apache) 到 
 
-$SPARK_HOME=/opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/lib/spark2/jar下
+$SPARK_HOME=/opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/下
 
 #设置yarn_conf_dir
 vi $SPARK_HOME/conf/spark-env.sh => /etc/spark2/conf/spark-env.sh
 export YARN_CONF_DIR=/etc/hadoop/conf.cloudera.yarn
 
-sudo -u hdfs spark2-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster /opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/lib/spark2/examples/jars /10
+sudo -u hdfs spark2-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster /opt/cloudera/parcels/SPARK2-2.2.0.cloudera1-1.cdh5.12.0.p0.142354/lib/spark2/examples/jars 10
+
+#saprksql && hive
+[添加hive的配置文件]
+
+vi /etc/spark2/spark-env.sh
+export YARN_CONF_DIR=/etc/hadoop/conf.cloudera.yarn
+export HADOOP_CONF_DIR=$HADOOP_CONF_DIR:/etc/hive/conf
+
+
+[拷贝apache 下sbin/start-thriftserver.sh,bin/spark-sql 至SPARK_HOME/sbin:bin下]
+sh start-thriftserver
+sh spark-sql
+即可 通过thfirt 连接hive
+
+

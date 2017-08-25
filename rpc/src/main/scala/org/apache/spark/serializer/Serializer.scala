@@ -23,7 +23,9 @@ import org.apache.spark.util.NextIterator
   * @note Serializers are not required to be wire-compatible across different versions of Spark.
   *       They are intended to be used to serialize/de-serialize data within a single Spark application.
   */
-
+/**
+  * 一些序列化库是不安全的，此抽象类以实现 [[SerializerInstance.]]
+  */
 abstract class Serializer {
 
   /**

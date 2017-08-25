@@ -21,6 +21,9 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 import scala.util.{DynamicVariable, Failure, Success}
 
+
+// 目前RpcEnv的唯一实现,新创建的NettyRpcEnv主要用于Endpoint的注册、启动transportServer、
+// 获得RPCEndpointRef、创建客户端等等；其主要成员有dispatcher、transportContext。
 class NettyRpcEnv(
                    val conf: RpcConf,
                    javaSerializerInstance: JavaSerializerInstance,
@@ -28,11 +31,12 @@ class NettyRpcEnv(
 
   private val log = LoggerFactory.getLogger(classOf[NettyRpcEnv])
 
-  private[netty] val transportConf = KrapsTransportConf.fromSparkConf(
+  //todo 2 创建transportConf 一些默认的rpc值
+  private[netty] val transportConf = TransportConf.fromSparkConf(
     conf.set("spark.rpc.io.numConnectionsPerPeer", "1"),
     "rpc",
     conf.getInt("spark.rpc.io.threads", 0))
-
+  // 创建Dispatcher，主要用户消息的分发处理
   private val dispatcher: Dispatcher = new Dispatcher(this)
 
   // omit for signature
@@ -40,14 +44,18 @@ class NettyRpcEnv(
     override def getChunk(streamId: Long, chunkIndex: Int) = null
   }
 
-  private val transportContext = new TransportContext(transportConf,
-    new NettyRpcHandler(dispatcher, this, streamManager))
+  //todo 3 创建一个transportContext，主要用于创建Netty的Server和Client，
+  // 其中Spark将Netty框架进行封装，以transportContext为外部切入口，与NettyRpcEndpoint等Spark代码对应，从而创建底层通信的服务端和客户端。后面会详细介绍Spark对Netty的封装。
+  private val handler = new NettyRpcHandler(dispatcher, this, streamManager)
+  private val transportContext = new TransportContext(transportConf,handler)
 
   private def createClientBootstraps(): java.util.List[TransportClientBootstrap] =
     java.util.Collections.emptyList[TransportClientBootstrap]
 
+  //  声明一个clientFactory，用户创建通信的客户端
   private val clientFactory = transportContext.createClientFactory(createClientBootstraps())
 
+  // 创建一个netty-rpc-env-timeout的守护线程
   val timeoutScheduler = ThreadUtils.newDaemonSingleThreadScheduledExecutor("netty-rpc-env-timeout")
 
   // Because TransportClientFactory.createClient is blocking, we need to run it in this thread pool
@@ -77,12 +85,14 @@ class NettyRpcEnv(
     }
   }
 
+  //todo 根据指定端口，启动transportServer
   def startServer(bindAddress: String, port: Int): Unit = {
     // here disable security
     val bootstraps: java.util.List[TransportServerBootstrap] = java.util.Collections.emptyList()
+    //通过transportContext启动通信底层的服务端
     server = transportContext.createServer(bindAddress, port, bootstraps)
-      dispatcher.registerRpcEndpoint(
-      RpcEndpointVerifier.NAME, new RpcEndpointVerifier(this, dispatcher))
+    //注册一个RpcEndpointVerifier，对Server进行验证
+    dispatcher.registerRpcEndpoint(RpcEndpointVerifier.NAME, new RpcEndpointVerifier(this, dispatcher))
   }
 
   @Nullable
@@ -302,10 +312,9 @@ object NettyRpcEnvFactory extends RpcEnvFactory {
 
     // Use JavaSerializerInstance in multiple threads is safe. However, if we plan to support
     // KryoSerializer in future, we have to use ThreadLocal to store SerializerInstance
-    val javaSerializerInstance =
-    new JavaSerializer(conf).newInstance().asInstanceOf[JavaSerializerInstance]
-    val nettyEnv =
-      new NettyRpcEnv(conf, javaSerializerInstance, config.bindAddress)
+    //     //创建序列化
+    val javaSerializerInstance = new JavaSerializer(conf).newInstance().asInstanceOf[JavaSerializerInstance]
+    val nettyEnv = new NettyRpcEnv(conf, javaSerializerInstance, config.bindAddress)
     if (!config.clientMode) {
       val startNettyRpcEnv: Int => (NettyRpcEnv, Int) = { actualPort =>
         nettyEnv.startServer(config.bindAddress, actualPort)

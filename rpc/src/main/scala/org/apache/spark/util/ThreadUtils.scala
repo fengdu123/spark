@@ -10,7 +10,9 @@ import scala.concurrent.forkjoin.{ForkJoinPool => SForkJoinPool, ForkJoinWorkerT
 import scala.concurrent.{Await, Awaitable, ExecutionContext, ExecutionContextExecutor}
 import scala.util.control.NonFatal
 
-
+/**
+  *  线程池Util
+  */
 object ThreadUtils {
 
   private val sameThreadExecutionContext =

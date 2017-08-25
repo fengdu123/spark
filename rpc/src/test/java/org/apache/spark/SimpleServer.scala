@@ -7,13 +7,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-/**
-  * Created by xu.zhang on 7/23/17.
-  */
+
 object RpcServerTest {
 
   def main(args: Array[String]): Unit = {
     val config = RpcEnvServerConfig(new RpcConf(), "hello-server", "localhost", 52345)
+    // todo 非常重要 创建一个RpcServer
     val rpcEnv: RpcEnv = NettyRpcEnvFactory.create(config)
     val helloEndpoint: RpcEndpoint = new HelloEndpoint(rpcEnv)
     val helloEndpointRef = rpcEnv.setupEndpoint(HelloEndpoint.ENDPOINT_NAME, helloEndpoint)

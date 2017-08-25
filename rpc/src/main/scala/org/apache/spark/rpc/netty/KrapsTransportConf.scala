@@ -3,10 +3,7 @@ package org.apache.spark.rpc.netty
 import org.apache.spark.RpcConf
 import org.apache.spark.network.util.{ConfigProvider, TransportConf}
 
-/**
-  * Created by xu.zhang on 7/30/17.
-  */
-object KrapsTransportConf {
+object TransportConf {
   /**
     * Specifies an upper bound on the number of Netty threads that Kraps requires by default.
     * In practice, only 2-4 cores should be required to transfer roughly 10 Gb/s, and each core
@@ -16,7 +13,7 @@ object KrapsTransportConf {
   private val MAX_DEFAULT_NETTY_THREADS = 8
 
   /**
-    * Utility for creating a [[KrapsTransportConf]] from a [[org.apache.spark.RpcConf]].
+    * Utility for creating a [[TransportConf]] from a [[org.apache.spark.RpcConf]].
     *
     * @param conf           the [[org.apache.spark.RpcConf]]
     * @param module         the module name

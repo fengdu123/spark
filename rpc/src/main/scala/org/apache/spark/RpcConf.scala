@@ -6,6 +6,10 @@ import org.apache.spark.util.Utils
 
 import scala.collection.JavaConverters._
 
+/**
+  * RpcConf 一个hashmap 充当着配置文件的作用，默认读取环境变量中以spark开头的properties
+  * @param loadDefaults
+  */
 case class RpcConf(loadDefaults: Boolean = true) extends Cloneable with Serializable {
 
   /** Create a RpcConf that loads defaults from system properties and the classpath */

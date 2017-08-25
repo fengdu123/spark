@@ -45,14 +45,16 @@ object SparkHiveExample {
     val spark = SparkSession
       .builder()
       .appName("Spark Hive Example")
-      .config("spark.sql.warehouse.dir", warehouseLocation)
-      .enableHiveSupport()
+     // .config("spark.sql.warehouse.dir", warehouseLocation)
+     // .enableHiveSupport()
+        .master("local[*]")
       .getOrCreate()
 
     import spark.implicits._
     import spark.sql
 
-    sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING) USING hive")
+    sql("use tt")
+    sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING)")
     sql("LOAD DATA LOCAL INPATH 'examples/src/main/resources/kv1.txt' INTO TABLE src")
 
     // Queries are expressed in HiveQL

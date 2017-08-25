@@ -88,6 +88,8 @@ public class TransportServer implements Closeable {
 
   private void init(String hostToBind, int portToBind) {
 
+
+    // todo 终于找到netty的模板代码了
     IOMode ioMode = IOMode.valueOf(conf.ioMode());
     EventLoopGroup bossGroup =
       NettyUtils.createEventLoop(ioMode, conf.serverThreads(), conf.getModuleName() + "-server");

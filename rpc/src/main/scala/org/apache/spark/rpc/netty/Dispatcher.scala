@@ -15,6 +15,7 @@ import scala.util.control.NonFatal
 
 /**
   * A message dispatcher, responsible for routing RPC messages to the appropriate endpoint(s).
+  * 消息调度器，负责将RPC消息路由到适当的终端。
   */
 private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) {
 
@@ -27,12 +28,14 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) {
     val inbox = new Inbox(ref, endpoint)
   }
 
-  private val endpoints: ConcurrentMap[String, EndpointData] =
-    new ConcurrentHashMap[String, EndpointData]
-  private val endpointRefs: ConcurrentMap[RpcEndpoint, RpcEndpointRef] =
-    new ConcurrentHashMap[RpcEndpoint, RpcEndpointRef]
+  // 维护一个HaskMap，保存Name与EndpointData的关系
+  private val endpoints = new ConcurrentHashMap[String, EndpointData]
+  // 维护一个HaskMap，保存RpcEndpoint与RpcEndpointRef的关系
+  private val endpointRefs = new ConcurrentHashMap[RpcEndpoint, RpcEndpointRef]
 
   // Track the receivers whose inboxes may contain messages.
+  //维护一个BlockingQueue的队列，用于保存拥有消息的EndpointData，注册Endpoint、
+  //发送消息时、停止RpcEnv时、取消注册的Endpoint时，会在receivers中添加相应的EndpointData
   private val receivers = new LinkedBlockingQueue[EndpointData]
 
   /**
@@ -99,6 +102,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) {
   }
 
   /** Posts a message sent by a remote endpoint. */
+  // todo 发布一个由远端endpoint发送的消息
   def postRemoteMessage(message: RequestMessage, callback: RpcResponseCallback): Unit = {
     val rpcCallContext =
       new RemoteNettyRpcCallContext(nettyEnv, callback, message.senderAddress)
@@ -126,13 +130,17 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) {
     * @param endpointName      name of the endpoint.
     * @param message           the message to post
     * @param callbackIfStopped callback function if the endpoint is stopped.
+    *
+    * 根据上面的代码可以看出，Dispatcher在进行Message分发到相应的Endpoint进行处理时，实际上是将Message分发到endpointData中进行处理了
+    * ，而EndpointData类中最重要的成员就是inbox，下面介绍Inbox。
+    *
     */
   private def postMessage(
                            endpointName: String,
                            message: InboxMessage,
                            callbackIfStopped: (Exception) => Unit): Unit = {
     val error = synchronized {
-      val data = endpoints.get(endpointName)
+      val data : EndpointData = endpoints.get(endpointName)
       if (stopped) {
         Some(new RpcEnvStoppedException())
       } else if (data == null) {

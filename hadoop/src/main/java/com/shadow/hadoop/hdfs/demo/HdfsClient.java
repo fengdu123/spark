@@ -49,36 +49,37 @@ public class HdfsClient {
      */
     public static void main(String[] args) throws Exception {
         HdfsClient client = new HdfsClient();
+
         String splitStr = "-----------------------------";
 
         System.out.println(splitStr);
         client.printInfo();
 
-        System.out.println(splitStr);
-        client.checkFileExist();
-
-        System.out.println(splitStr);
-        String pathuri = "hdfs://master:9000/newdir";
-        client.mkdir(pathuri);
-
-        System.out.println(splitStr);
-        String filepath = "hdfs://master:9000/create.txt";
-        client.createFile(filepath);
-
-        System.out.println(splitStr);
-        client.readFile(filepath);
-
-        System.out.println(splitStr);
-        client.getFileBlockLocation(filepath);
-
-        System.out.println(splitStr);
-        pathuri = "hdfs://master:9000/";
-        client.listAllFile(pathuri, true);
-
-        System.out.println(splitStr);
-        client.putFileToHDFS("readme.MD", "hdfs://master:9000/"+new DateTime().toString("yyyyMMdd"));
-
-        fs.close();
+//        System.out.println(splitStr);
+//        client.checkFileExist();
+//
+//        System.out.println(splitStr);
+//        String pathuri = "hdfs://master:9000/newdir";
+//        client.mkdir(pathuri);
+//
+//        System.out.println(splitStr);
+//        String filepath = "hdfs://master:9000/create.txt";
+//        client.createFile(filepath);
+//
+//        System.out.println(splitStr);
+//        client.readFile(filepath);
+//
+//        System.out.println(splitStr);
+//        client.getFileBlockLocation(filepath);
+//
+//        System.out.println(splitStr);
+//        pathuri = "hdfs://master:9000/";
+//        client.listAllFile(pathuri, true);
+//
+//        System.out.println(splitStr);
+//        client.putFileToHDFS("readme.MD", "hdfs://master:9000/"+new DateTime().toString("yyyyMMdd"));
+//
+//        fs.close();
 
     }
 

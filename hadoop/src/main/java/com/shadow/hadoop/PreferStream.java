@@ -27,7 +27,6 @@ public class PreferStream {
 
         System.setProperty("HADOOP_USER_NAME", "root");
         conf = new Configuration();
-//		conf.set("fs.defaultFS", "hdfs://mini1:9000");
         conf.addResource("core-site.xml");
         conf.addResource("hdfs-site.xml");
        // conf.set("dfs.replication", "5");
