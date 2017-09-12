@@ -9,35 +9,72 @@ import org.apache.spark.sql.SparkSession
 object saprkcsv {
 
 
-  case class person(var order_sn:String,var pay_company_commission_fee: BigDecimal,var merchant_commission_fee: BigDecimal)
+  //
+  System.setProperty("hadoop.home.dir","D:\\_20170526")
+
+  case class person(var orderisn: String, var payicompanyicommissionifee: BigDecimal, var merchanticommissionifee: BigDecimal)
 
   def main(args: Array[String]): Unit = {
 
-    val spark=  SparkSession.builder().appName("jdbc").master("local[*]").getOrCreate();
+    val spark = SparkSession.builder().appName("jdbc").master("local[*]").getOrCreate();
 
-    spark.sparkContext.addJar("D:\\m2\\20170511\\mysql\\mysql-connector-java\\5.1.42\\mysql-connector-java-5.1.42.jar")
+    spark.sparkContext.addJar("D:\\mysql-connector-java-5.1.38.jar")
     import spark.implicits._
-    val jdbcDF = spark.read.format("jdbc").options(
-      Map("url" -> "jdbc:mysql://localhost:3306/fs_liquidation_platform?user=fXX&password=XXX",
-        "dbtable" -> s"""(SELECT order_sn ,pay_company_commission_fee,merchant_commission_fee FROM `fbs_day_order`
-        ) t""".stripMargin,
-        "driver" ->"com.mysql.jdbc.Driver",
+    val tuple22Ds = spark.read.format("jdbc").options(
+      Map("url" -> "jdbc:mysql://localhost:3306/oozie?user=root&password=root",
+        "dbtable" ->
+          s"""(SELECT * from tuple22
+            ) t""".stripMargin,
+        "driver" -> "com.mysql.jdbc.Driver",
         "fetchSize" -> "1"
-      )).load().as[person]
+      )).load().as[tuple22]
 
-    jdbcDF.createTempView("fbs_day_order")
+    println(s" >>  tuple22Ds.show(1)")
+    tuple22Ds.show(1)
 
-    import spark.sql
+    val tuple23Ds = spark.read.format("jdbc").options(
+      Map("url" -> "jdbc:mysql://localhost:3306/oozie?user=root&password=root",
+        "dbtable" ->
+          s"""(SELECT * from tuple23
+            ) t""".stripMargin,
+        "driver" -> "com.mysql.jdbc.Driver",
+        "fetchSize" -> "1"
+      )).load().as[tuple23]
+    println(s" >>  tuple23Ds.show(1)")
+    tuple23Ds.show()
 
-    jdbcDF.write.format("csv").csv("1.csv")
+    val tuple22DF = spark.read.format("jdbc").options(
+      Map("url" -> "jdbc:mysql://localhost:3306/oozie?user=root&password=root",
+        "dbtable" ->
+          s"""(SELECT * from tuple22
+            ) t""".stripMargin,
+        "driver" -> "com.mysql.jdbc.Driver",
+        "fetchSize" -> "1"
+      )).load()
 
+    println(s" >>  tuple22DF.show(1)")
+    tuple22DF.show(1)
 
+    val tuple23DF = spark.read.format("jdbc").options(
+      Map("url" -> "jdbc:mysql://localhost:3306/oozie?user=root&password=root",
+        "dbtable" ->
+          s"""(SELECT * from tuple23
+            ) t""".stripMargin,
+        "driver" -> "com.mysql.jdbc.Driver",
+        "fetchSize" -> "1"
+      )).load()
 
-
-
-    // spark.close()
-
+    println(s" >>  tuple23DF.show(1)")
+    tuple23DF.show(1)
+    spark.close()
 
 
   }
+
+  case class tuple23(i1: Int, i2: Int, i3: Int, i4: Int, i5: Int, i6: Int, i7: Int, i8: Int, i9: Int, i10: Int, i11: Int, i12: Int, i13: Int, i14: Int, i15: Int, i16: Int, i17: Int, i18: Int, i19: Int, i20: Int, i21: Int, i22: Int, i23: Int) {
+  }
+
+  case class tuple22(i1: Int, i2: Int, i3: Int, i4: Int, i5: Int, i6: Int, i7: Int, i8: Int, i9: Int, i10: Int, i11: Int, i12: Int, i13: Int, i14: Int, i15: Int, i16: Int, i17: Int, i18: Int, i19: Int, i20: Int, i21: Int, i22: Int) {
+  }
+
 }

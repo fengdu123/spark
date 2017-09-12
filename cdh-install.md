@@ -34,7 +34,7 @@ create database oozie default charset utf8;
 
 ## 免密登入
 ssh 
-
+echo '192.168.132.1 spafka' >> /etc/hosts 
 echo '192.168.132.3  cdh01.spafka.com' >> /etc/hosts
 echo '192.168.132.4  cdh02.spafka.com' >> /etc/hosts
 echo '192.168.132.5  cdh03.spafka.com' >> /etc/hosts
@@ -46,6 +46,8 @@ ssh-copy-id cdh01.spafka.com
 ## ntp服务
 
 [server]
+ntpdate 0.centos.pool.ntp.org 首先与外部同步
+
 ntpd 
 
 vi /etc/ntp.conf
@@ -64,56 +66,73 @@ crontab -e
 1 * * * * root /usr/sbin/ntpdate cdh01.spafka.com >> /root/ntpdate.log 2>&1
 
 ## 安装CM
-useradd --system --home=/opt/cm-5.8.4/run/cloudera-scm-server --no-create-home --shell=/bin/false --comment "Cloudera SCM User" cloudera-scm
+useradd --system --home=/opt/cm-5.7.5/run/cloudera-scm-server --no-create-home --shell=/bin/false --comment "Cloudera SCM User" cloudera-scm
 usermod -a -G root cloudera-scm
 echo USER=\"cloudera-scm\" >> /etc/default/cloudera-scm-agent
 echo "Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin" >> /etc/sudoers
 
-tar -zxvf cloudera-manager-el6-cm5.8.4_x86_64.tar.gz -C /opt/
+tar -zxvf cloudera-manager-el6-cm5.7.5_x86_64.tar.gz -C /opt/
+
+
+# 将Parcel相关的三个文件拷贝到/opt/cloudera/parcel-repo
+cp CDH-5.7.5-1.cdh5.7.5.p0.45-el6.parcel /opt/cloudera/parcel-repo/
+cp CDH-5.7.5-1.cdh5.7.5.p0.45-el6.parcel.sha1 /opt/cloudera/parcel-repo/
+cp manifest.json /opt/cloudera/parcel-repo/
+# 改名cd /ho  
+mv /opt/cloudera/parcel-repo/CDH-5.7.5-1.cdh5.7.5.p0.45-el6.parcel.sha1 /opt/cloudera/parcel-repo/CDH-5.7.5-1.cdh5.7.5.p0.45-el6.parcel.sha
+# 修改属主
+chown -R cloudera-scm:cloudera-scm /opt/cloudera/
+chown -R cloudera-scm:cloudera-scm /opt/cm-5.7.5/
+
 
  
 
-vi /opt/cm-5.8.4/etc/cloudera-scm-agent/config.ini 
+vi /opt/cm-5.7.5/etc/cloudera-scm-agent/config.ini 
 
-scp -r /opt/cm-5.8.4/ cdh03.spafka.com:/opt/ 
+scp -r /opt/cm-5.7.5/ cdh03.spafka.com:/opt/ 
+scp -r /opt/cm-5.7.5/ cdh02.spafka.com:/opt/ 
 
 #每台机器 
 chown -R cloudera-scm:cloudera-scm /opt/cloudera/
-chown -R cloudera-scm:cloudera-scm /opt/cm-5.8.4/
+chown -R cloudera-scm:cloudera-scm /opt/cm-5.7.5/
+
+
+
+
 #[server]
-/opt/cm-5.8.4/share/cmf/schema/scm_prepare_database.sh mysql -hlocalhost -uroot -proot --scm-host localhost scm scm scm
+/opt/cm-5.7.5/share/cmf/schema/scm_prepare_database.sh mysql cm -h192.168.132.1 -uroot -p --scm-host 192.168.132.1 root root root
 
 mkdir /var/lib/cloudera-scm-server
 chown -R cloudera-scm.cloudera-scm /var/lib/cloudera-scm-server
 
-/opt/cm-5.8.4/etc/init.d/cloudera-scm-server start
-tail -f /opt/cm-5.8.4/log/cloudera-scm-server/cloudera-scm-server.log
+/opt/cm-5.7.5/etc/init.d/cloudera-scm-server start
+tail -f /opt/cm-5.7.5/log/cloudera-scm-server/cloudera-scm-server.log
 # [agent]
-mkdir /opt/cm-5.8.4/run/cloudera-scm-agent
-chown cloudera-scm:cloudera-scm /opt/cm-5.8.4/run/cloudera-scm-agent
-/opt/cm-5.8.4/etc/init.d/cloudera-scm-agent start
+mkdir /opt/cm-5.7.5/run/cloudera-scm-agent
+chown cloudera-scm:cloudera-scm /opt/cm-5.7.5/run/cloudera-scm-agent
+/opt/cm-5.7.5/etc/init.d/cloudera-scm-agent start
 
 
 # 安装失败回滚
 1> 删除Agent节点的UUID 
-      # rm -rf /opt/cm-5.8.4/lib/cloudera-scm-agent/*
+      # rm -rf /opt/cm-5.7.5/lib/cloudera-scm-agent/*
 2>  清空主节点CM数据库
       进入主节点的MySQL数据库，然后drop database cm;
 3> 删除Agent节点namenode和datanode节点信息
      # rm -rf /opt/dfs/nn/*
      # rm -rf /opt/dfs/dn/*
 4> 在主节点上重新初始化CM数据库
-     # /opt/cm-5.8.4/share/cmf/schema/scm_prepare_database.sh mysql cm -hlocalhost -uroot -p --scm-host localhost scm scm scm
+     # /opt/cm-5.7.5/share/cmf/schema/scm_prepare_database.sh mysql cm -hlocalhost -uroot -p --scm-host localhost scm scm scm
 5> 执行启动脚本
-     主节点：# /opt/cm-5.8.4/etc/init.d/cloudera-scm-server start
-     Agent节点：# /opt/cm-5.8.4/etc/init.d/cloudera-scm-agent start
+     主节点：# /opt/cm-5.7.5/etc/init.d/cloudera-scm-server start
+     Agent节点：# /opt/cm-5.7.5/etc/init.d/cloudera-scm-agent start
 
 # 启动
 [server]
-/opt/cm-5.8.4/etc/init.d/cloudera-scm-server start
-tail -f /opt/cm-5.8.4/log/cloudera-scm-server/cloudera-scm-server.log
+/opt/cm-5.7.5/etc/init.d/cloudera-scm-server start
+tail -f /opt/cm-5.7.5/log/cloudera-scm-server/cloudera-scm-server.log
 [agent]
-/opt/cm-5.8.4/etc/init.d/cloudera-scm-agent start
+/opt/cm-5.7.5/etc/init.d/cloudera-scm-agent start
 
 
 # 测试MR 
@@ -160,6 +179,7 @@ sudo -u hdfs spark2-submit --class org.apache.spark.examples.SparkPi --master ya
 [添加hive的配置文件]
 
 vi /etc/spark2/spark-env.sh
+export HADOOP_CONF=
 export YARN_CONF_DIR=/etc/hadoop/conf.cloudera.yarn
 export HADOOP_CONF_DIR=$HADOOP_CONF_DIR:/etc/hive/conf
 

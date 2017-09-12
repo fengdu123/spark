@@ -1,5 +1,6 @@
 package com.shadow.jvm.concurent.AQS;
 
+
 public abstract class AbstractOwnableSynchronizer
         implements java.io.Serializable {
 

@@ -1,7 +1,7 @@
 package org.shadow.scala.thread
 
 /**
-  * 从spark中扣出来的消费, 启动入口
+  * 从spark中抠出来的消费, 启动入口
   */
 object Bootstrap {
 

@@ -19,7 +19,7 @@ object HiveSql {
 
     val spark = SparkSession.builder().appName("thrift").master("local[*]").enableHiveSupport().getOrCreate()
 
-    import spark.sql()
+    import spark.sql
     sql("show databases").show()
     spark.stop()
   }
