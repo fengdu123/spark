@@ -1,20 +1,25 @@
 package org.apache.spark
 
 import java.util.concurrent.{Callable, ExecutorCompletionService, Executors, Future}
+import java.util.logging.LogManager
 
+import lombok.extern.log4j.Log4j2
+import org.apache.logging.log4j.core.jmx.LoggerConfigAdminMBean
 import org.apache.spark.rpc.netty.NettyRpcEnvFactory
 import org.apache.spark.rpc.{RpcAddress, RpcEndpointRef, RpcEnv, RpcEnvClientConfig}
-
+import org.slf4j.{Logger, LoggerFactory}
 
 object BenchTest {
 
+
+  private val log: Logger = LoggerFactory.getLogger("")
   def main(args: Array[String]): Unit = {
-//    val host = args(0)
-//    val invokeNumber = args(1).toInt
-//    val concurrentNumber = args(2).toInt
-        val host = "localhost"
-        val invokeNumber = 100000
-        val concurrentNumber = 50
+    //    val host = args(0)
+    //    val invokeNumber = args(1).toInt
+    //    val concurrentNumber = args(2).toInt
+    val host = "localhost"
+    val invokeNumber = 100000
+    val concurrentNumber = 50
     val rpcConf = new RpcConf()
     val config = RpcEnvClientConfig(rpcConf, "hello-client")
     val rpcEnv: RpcEnv = NettyRpcEnvFactory.create(config)
@@ -36,9 +41,9 @@ object BenchTest {
         elapsedTime = elapsedTime + future.get()
       }
       val cost = System.currentTimeMillis() - starting
-      println(s"Total used time (ms): ${cost}")
-      println(s"Average cost time (ns): ${elapsedTime / invokeNum}")
-      println(s"QPS: ${1000.0 / ((cost * 1.0) / invokeNum)}")
+      log.warn(s"Total used time (ms): ${cost}")
+      log.warn(s"Average cost time (ns): ${elapsedTime / invokeNum}")
+      log.warn(s"QPS: ${1000.0 / ((cost * 1.0) / invokeNum)}")
     } finally {
       executor.shutdown()
     }

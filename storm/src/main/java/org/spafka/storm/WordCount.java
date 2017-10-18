@@ -1,14 +1,16 @@
 package org.spafka.storm;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
+import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 
 public class WordCount {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
 
         TopologyBuilder builder = new TopologyBuilder();
 
@@ -24,8 +26,8 @@ public class WordCount {
         config.setNumWorkers(2);
         config.setDebug(true);
 
-        //        StormSubmitter.submitTopology("mywordcount",config,topologyBuilder.createTopology());
-        LocalCluster localCluster = new LocalCluster();
-        localCluster.submitTopology("mywordcount", config, builder.createTopology());
+        StormSubmitter.submitTopology("mywordcount", config, builder.createTopology());
+//        LocalCluster localCluster = new LocalCluster();
+//        localCluster.submitTopology("mywordcount", config, builder.createTopology());
     }
 }

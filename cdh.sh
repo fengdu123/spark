@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # 启动
 [server]
 /opt/cm-5.7.5/etc/init.d/cloudera-scm-server start

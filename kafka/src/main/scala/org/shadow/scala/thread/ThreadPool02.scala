@@ -2,7 +2,7 @@ package org.shadow.scala.thread
 
 import java.util.concurrent.{Callable, Executors, TimeUnit}
 
-object ThreadPool02 {
+object defThreadPool02 {
 
   def main(args: Array[String]) {
     val threadPool = Executors.newFixedThreadPool(10)

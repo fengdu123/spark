@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="off" monitorInterval="1800">
+    <properties>
+        <property name="LOG_HOME">${sys:user.home}/logs/storm</property>
+        <property name="SERVER_NAME">kuaifu-shop-api</property>
+        <property name="BUSINESS_NAME">business</property>
+        <property name="PAY_NAME">pay</property>
+        <property name="PAYCALLBACK_NAME">payCallBack</property>
+        <property name="TASK_NAME">task</property>
+        <property name="UNION_PLATFORM_NAME">unionPlatform</property>
+        <property name="LIQUIDATOR_PLATFORM_NAME">liquidatorPlatform</property>
+        <property name="ERROR_NAME">error</property>
+    </properties>
+    <appenders>
+        <!-- 定义控制台输出 -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd'T'HH:mm:ssZ}  | [%thread] | %-5level | %logger{50} | %msg%n"/>
+        </Console>
+        <!-- 业务日志 -->
+        <RollingRandomAccessFile name="order"
+                                 fileName="${LOG_HOME}/${SERVER_NAME}-${BUSINESS_NAME}.log"
+                                 filePattern="${LOG_HOME}/${SERVER_NAME}-${BUSINESS_NAME}.%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout
+                    pattern=" %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!--<Filters>-->
+            <!--<ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/>-->
+            <!--<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>-->
+            <!--</Filters>-->
+        </RollingRandomAccessFile>
+
+        <!-- 错误日志 -->
+        <RollingRandomAccessFile name="error"
+                                 fileName="${LOG_HOME}/${SERVER_NAME}-${ERROR_NAME}.log"
+                                 filePattern="${LOG_HOME}/${SERVER_NAME}-${ERROR_NAME}.%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd'T'HH:mm:ssZ}  | [%thread] | %-5level | %logger{50} | %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+    </appenders>
+
+    <loggers>
+        <!-- Root Logger -->
+        <root level="info" includeLocation="true">
+            <appender-ref ref="Console"/>
+        </root>
+
+        <!-- 第三方 logger -->
+        <logger name="com.alibaba.druid" level="warn" additivity="false">
+        </logger>
+        <logger name="org.springframework" level="warn" additivity="false">
+        </logger>
+        <logger name="org.hibernate" level="warn" additivity="false">
+        </logger>
+        <logger name="org.apache.ibatis" level="warn" additivity="false">
+        </logger>
+        <logger name="org.mybatis" level="warn" additivity="false">
+        </logger>
+        <logger name="com.zaxxer.hikari" level="info" additivity="true">
+        </logger>
+        <logger name="druid.sql" level="debug" />
+
+        <!-- 业务 logger -->
+        <logger name="order" level="info" additivity="true">
+            <appender-ref ref="order"/>
+            <appender-ref ref="error"/>
+        </logger>
+
+
+
+    </loggers>
+
+</configuration>

@@ -1,9 +1,8 @@
 package com.shadow.jvm.concurent.CAS;
 
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.util.Random;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -23,20 +22,15 @@ import static java.util.Optional.*;
  * **乐观锁其实就是不加锁，用CAS + 循环重试，实现多个线程/多个客户端，并发修改数据的问题。**
  * See https://coderbee.net/index.php/concurrent/20131115/577
  */
+@Log4j2
 public class SpinLock {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(SpinLock.class);
-
-//    private static final Unsafe unsafe = Unsafe.getUnsafe();
-
     private  volatile AtomicReference<Thread> sign =new AtomicReference<>();
 
     // 如果sign不为空，则把当前线程自旋 ,否则继续执行线程
     public void lock(){
         Thread current = Thread.currentThread();
         while(!sign .compareAndSet(null, current)){ //sign 为空，则不打印词句
-           logger.info(current.getName()+" is spinning , acquire lock from "+ ofNullable(sign).get().toString());
+            log.warn(Thread.currentThread().getName()+" is spinning , acquire lock from "+ ofNullable(sign).get().toString());
         }
     }
 
@@ -44,21 +38,18 @@ public class SpinLock {
     public void unlock (){
         Thread current = Thread.currentThread();
         sign .compareAndSet(current, null);
-       logger.info(current.getName()+" un locked, and now lock is onwed to "+ sign);
+        log.warn(Thread.currentThread().getName()+" un locked, and now lock is onwed to "+ sign);
     }
 
    static ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public static void main(String[] args) {
 
-
-        System.out.println(Runtime.getRuntime().availableProcessors());
-
          final SpinLock spinLock = new SpinLock();
 
          Runnable r =() -> {
             spinLock.lock();
-            logger.info((Thread.currentThread().getName() + " executed, " + spinLock.sign.get().getName()));
+             log.warn(Thread.currentThread().getName() + " executed, " + spinLock.sign.get().getName());
             spinLock.unlock();
         };
 

@@ -18,11 +18,14 @@
 // scalastyle:off println
 package com.shadow.spark
 
+import lombok.extern.log4j.Log4j2
+
 import scala.math.random
 import org.apache.spark.sql.SparkSession
 import org.shadow.core.Logging
 
 /** Computes an approximation to pi */
+@Log4j2
 object SparkPi extends Logging{
   def main(args: Array[String]) {
     val spark = SparkSession
