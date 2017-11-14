@@ -125,3 +125,8 @@ hs_err_pid*
 
 *.DS_Store
 
+
+
+/scala/scala-in-depth-source/
+/spark-warehouse/
+/data-algorithms-book-master/
