@@ -13,6 +13,7 @@
         <module>hbase</module>
         <module>storm</module>
         <module>ant</module>
+        <module>scala</module>
     </modules>
     <repositories>
         <!--<repository>-->
